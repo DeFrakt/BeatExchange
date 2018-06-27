@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>BeatExchange | Login & Registration</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <style>
+    b {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">{% load static %}
+      <img src="{% static "images/speaker.png" %}" height="30px" alt="BeatExchange" /> Beat Exchange</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Registration & Login
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+       
+      </ul>
+      <span class="navbar-item">
+      </span>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="container col-lg-12 " style="margin-top: 50px; background-color: rgb(226, 226, 226);">
+      <div class="row">
+        <div class="col col-lg-6 border 1px">
+          <h5>Register</h5>
+          <form action="registration" method="POST">
+            {% csrf_token %}
+            <table class="table table-dark table-striped">
+              <tbody>
+                <tr>
+                  <td>First Name</td>
+                  <td>
+                    <input type="text" class="form-control" id="usr" name="first"> {% for m in messages %} {% if m.tags == "first error" %}
+                    <b>{{m}}</b>
+                    {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Last Name</td>
+                  <td>
+                    <input type="text" class="form-control" id="usr" name="last"> {% for m in messages %} {% if m.tags == "last error" %}
+                    <b>{{m}}</b>
+                    {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>
+                    <input type="text" class="form-control" id="usr" name="email"> {% for m in messages %} {% if m.tags == "email error" %}
+                    <b>{{m}}</b>
+                    {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Password</td>
+                  <td>
+                    <input type="password" class="form-control" id="usr" name="pwd"> {% for m in messages %} {% if m.tags == "pwd error" %}
+                    <b>{{m}}</b>
+                    {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Confrim Password</td>
+                  <td>
+                    <input type="password" class="form-control" id="usr" name="pwd_confirm"> {% for m in messages %} {% if m.tags == "pwd_confirm error" %}
+                    <b>{{m}}</b>
+                    {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <input type="submit" value="Submit">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <div>
+          <div class="container">
+            <div class="col col-lg-18 border 1px">
+              <h5>Login</h5>
+              <form action="login" method="POST">
+                {% csrf_token %}
+                <table class="table table-dark table-striped">
+                  <tbody>
+                    <tr>
+                      <td>Email</td>
+                      <td>
+                        <input type="text" class="form-control" id="usr" name="email_login"> {% for m in messages %} {% if m.tags == "email_log error" %}
+                        <b>{{m}}</b>
+                        {% endif %} {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Password</td>
+                      <td>
+                        <input type="password" class="form-control" id="usr" name="pwd_login"> {% for m in messages %} {% if m.tags == "pwd_log error" %}
+                        <b>{{m}}</b>
+                        {% endif %} {% endfor %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <input type="submit" value="Submit">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+          crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+          crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+          crossorigin="anonymous"></script>
+
+</body>
+
+</html>
