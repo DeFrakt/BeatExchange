@@ -3,7 +3,6 @@ from django.db import models
 import re
 import bcrypt
 
-
 class UserManager(models.Manager):
     def basic_validator(self, postData):
         errors = {}
@@ -51,19 +50,20 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     objects = UserManager()
-
+    
     def __str__(self):
         return "ID:" + str(self.id)+ " |F:" + self.first_name + " |L:" + self.last_name + " |E:" + self.email + " |P:" + self.password
 
 class Beat(models.Model):
     name = models.CharField(max_length=255)
-    file_path = models.CharField(max_length=255)
+    file_path = models.FileField(upload_to='audio/')
     desc = models.TextField(max_length=1000)
     payment = models.BooleanField(default=False)
-    user_id = models.ForeignKey(User, related_name = "owner")
+    user = models.ForeignKey(User, related_name = "owner")
     allowed_users = models.ManyToManyField(User, related_name = "allowed_beat")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+
 
 class Sample(models.Model):
     name = models.CharField(max_length=255)
@@ -74,4 +74,8 @@ class Sample(models.Model):
     allowed_sample = models.ManyToManyField(User, related_name = "allowed")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+
+
+
+
 

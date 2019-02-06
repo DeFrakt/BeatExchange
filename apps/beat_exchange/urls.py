@@ -13,7 +13,8 @@ urlpatterns = [
     url(r'^sampler_process$', views.sampler_process),
     url(r'^cart$', views.cart),
     url(r'^payment$', views.payment),
-    url(r'^review$', views.review),
+    url(r'^review/(?P<id>\d+)$', views.review),
     url(r'^edit$', views.edit),
-    url(r'^edit_process$', views.edit_process),   # This line has changed! Notice that urlpatterns is a list, the comma is in
+    url(r'^edit_process$', views.edit_process),
+    url(r'^delete/(?P<id>\d+)$', views.delete),   # This line has changed! Notice that urlpatterns is a list, the comma is in
 ]      

@@ -1,88 +1,144 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>Beat Exchange</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
-        li{
-            list-style-type: none;
-        }
-        .col_display{
-            border: 3px solid black;
-            background-color: #b1b1b1;
-        }
-        b{
-          color: red;
-        }
-    </style>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/exchange">{% load static %}
-            <img src="{% static "images/speaker.png" %}" height="30px" alt="BeatExchange"/> Beat Exchange</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/exchange">Transfer <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/upload">Upload</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/sampler">Sample</a>
-            </li>
-          </ul>
-          <a class="navbar-brand" href="/my_account/{{request.session.id}}">Welcome, {{request.session.first_name}} {{request.session.last_name}}</a>
-          <span class="navbar-item">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">{% if request.session.admin == True %}
-                    <a class="nav-link" href="/admin">Admin</a>
-                </li>{% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Logout</a>
-                </li>
-            </ul>
-          </span>
-        </div>
-      </nav>
-      <div class="container col-lg-12 " style="margin-top: 50px; background-color: rgb(226, 226, 226);">
-        <div class="row">
-          <div class="col col-lg-6 border 1px" style="padding: 60px;">
-            <h4>Exchange</h4>
-            {% for quote in quote_data reversed %}
-            <div class="col_display" style="padding: 30px; margin-top:25px;">
-              <form action="/like/{{quote.id}}" method="POST">
-              {% csrf_token %}
-              <h5>{{quote.author}}</h5>
-              <h6>"{{quote.text}}"</h6>
-              <p>Posted by <a href="/user_quotes/{{quote.user_id.id}}">{{quote.user_id.first_name}} {{quote.user_id.last_name}}</a></p>
-              <hr>
-              <p>{{quote.like}} people like this</p>
-              <p><button type="submit" class="btn btn-primary">Like!</button></li></form></p>
-              {% if quote.user_id.id == request.session.id %}<p><a href="/delete/{{quote.id}}">Delete</a></p>{% endif %}
+<head>
+  <title>Beat Exchange</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <style>
+    li {
+      list-style-type: none;
+      padding: 0;
+    }
+    .col_display {
+      border: 3px solid black;
+      background-color: #b1b1b1;
+      border-radius: 10px;
+    }
+
+    b {
+      color: red;
+    }
+    #no_indent{
+    list-style: none;
+    padding-left: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/exchange">{% load static %}
+      <img src="{% static "images/speaker.png" %}" height="30px" alt="BeatExchange" /> Beat Exchange</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/exchange">Transfer
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/upload">Upload</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/sampler">Sample</a>
+        </li>
+      </ul>
+      <a class="navbar-brand" href="/my_account/{{request.session.id}}">Welcome, {{request.session.first_name}} {{request.session.last_name}}</a>
+      <span class="navbar-item">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">{% if request.session.admin == True %}
+            <a class="nav-link" href="/admin">Admin</a>
+          </li>{% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="/">Logout</a>
+          </li>
+        </ul>
+      </span>
+    </div>
+  </nav>
+  <div class="container col-lg-12 " style="margin-top: 50px; background-color: rgb(226, 226, 226);">
+    <div class="row">
+      <div class="col col-lg-6" style="padding: 20px; overflow:auto; width:600px;height:550px;">
+        <h4>Transfer</h4>
+        {% for t in transfer reversed %}
+        <div class="col_display" style="padding: 20px; margin-top:25px;">
+            <div class="row">
+                <div class="col col-sm-6">
+                  <h5>{{t.name}}</h5>
+                  <h6>{{t.desc}}</h6>
+                  <p>Uploaded at: {{t.created_at}}</p>
+                  <p>{{t.file_path.url}}
+                    <!-- <audio controls>
+                      <source src="{{t.file_path.url}}"> Your browser does not support the audio element.
+                    </audio> -->
+                  </p>
+                </div>
+                <div class="col col-sm-4">
+                  <h6><u>Beat Sent To</u></h6>
+                  <ul id="no_indent">
+                  {% for u in t.allowed_users.all %}
+                  <li>{{u.email}}</li>
+                  {% endfor %}
+                  </ul>
+                </div>
+                <div class="col col-sm-2">
+                  <p><a href="{{t.file_path.url}}">Download</a></p>
+                  <p><a href="/delete/{{beat.id}}">Delete</a></p>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-          <div class="col col-lg-6" style="padding: 60px;">
-            
+        </div>
+        {% endfor %}
+      </div>
+    <div class="col col-lg-6" style="padding: 20px;" >
+      <div style='overflow:auto;'>
+          <h4>Recieved</h4>
+        {% for r in recieved reversed %}
+        <div class="col_display" style="padding: 30px; margin-top:25px;">
+          <div class="row">
+            <div class="col col-sm-6">
+              <h5>{{r.name}}</h5>
+              <h6>{{r.desc}}</h6>
+              <p>Uploaded at: {{r.created_at}}</p>
+              <p>{{r.file_path.url}}
+            </div>
+            <div class="col col-sm-4">
+                <h6><u>Sent By</u></h6>
+              <p>{{r.user.first_name}} {{r.user.last_name}}</p>
+              <p>{{r.user.email}}</p>
+            </div>
+            <div class="col col-sm-2">
+                <p><a href="{{r.file_path.url}}">Download</a></p>
+              </div>
           </div>
         </div>
+      {% endfor %}
       </div>
+    </div>
+  </div>
+</div>
 
 
-    
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

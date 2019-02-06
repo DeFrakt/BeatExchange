@@ -15,8 +15,25 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
+from django.conf import settings
+from django.conf.urls.static import static
+######admin panel inegration
+from apps.beat_exchange.models import User, Sample, Beat
+class UserAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(User, UserAdmin)
+class BeatAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Beat, BeatAdmin)
+class SampleAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Sample, SampleAdmin)
+#####end admin panel
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('apps.beat_exchange.urls'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

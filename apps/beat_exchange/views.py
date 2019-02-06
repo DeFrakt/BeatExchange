@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 import bcrypt
 from django.contrib import messages
+from .forms import UploadFileForm
 
 #User/Admin
 def index(request):
@@ -67,7 +68,8 @@ def admin_process(request):
             elif request.POST['admin'] == "No":
                 user.admin = False
                 user.save()
-                request.session['admin'] = False
+                current_user = User.objects.get(id=request.session['id'])
+                request.session['admin'] = current_user.admin
             if request.POST['suspend'] == "Yes":
                 user.suspend = True
                 user.save()
@@ -83,15 +85,46 @@ def admin_process(request):
 def exchange(request):
     if "id" not in request.session:
         return redirect('/')
-    return render(request, 'beat_exchange/exchange.html')
+    t = Beat.objects.filter(user_id=request.session['id'])
+    r = Beat.objects.filter(allowed_users=request.session['id'])
+    context={
+        "transfer": t,
+        "recieved": r,
+
+    }
+    
+    return render(request, 'beat_exchange/exchange.html', context)
 #Upload
 def upload(request):
     if "id" not in request.session:
         return redirect('/')
-    return render(request, 'beat_exchange/upload.html')
+    context={
+        "users": User.objects.exclude(id=request.session['id'])
+    }
+    return render(request, 'beat_exchange/upload.html', context)
 def upload_process(request):
-    response = "upload_process"
-    return HttpResponse(response)
+    def handle_uploaded_file(f):
+        with open('media/filename', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+    if "id" not in request.session:
+        return redirect('/')
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        formed = form.is_valid()
+        if formed:
+            handle_uploaded_file(request.FILES['file'])    
+            user = User.objects.get(id=request.session['id'])
+            Beat.objects.create(name=request.POST['name'], file_path=request.FILES['file'], desc=request.POST['desc'], user_id=user.id)
+            beat=Beat.objects.last()
+            for send_u in request.POST.getlist('send_user'):
+                beat.allowed_users.add(send_u)
+            return redirect('/review/'+str(beat.id))
+    return redirect('/exchange')
+def delete(request, id):
+    d = Beat.objects.filter(id=id)
+    d.delete()
+    return redirect('/exchange')
 #Sampler
 def sampler(request):
     if "id" not in request.session:
@@ -108,9 +141,13 @@ def payment(request):
     response = "payment"
     return HttpResponse(response)
 #Review
-def review(request):
-    response = "review"
-    return HttpResponse(response)
+def review(request, id):
+    if "id" not in request.session:
+        return redirect('/')
+    context ={
+        "upload": Beat.objects.get(id=id)
+    }
+    return render(request, 'beat_exchange/review.html', context)
 #edit
 def edit(request):
     response = "edit"
